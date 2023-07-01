@@ -3,5 +3,3 @@ numpy
 opencv_python
 Pillow
 streamlit
-base64
-BytesIO
