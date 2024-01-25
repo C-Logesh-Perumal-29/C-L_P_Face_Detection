@@ -46,6 +46,10 @@ To run the Face Detection Application locally, follow these steps:
   
   • **1.jpg:** Icon / Logo for the web application.
 
+## Functionality Spotlight
+
+  ![Face Detection](https://github.com/C-Logesh-Perumal-29/C-L_P_Face_Detection/assets/125385633/a78f3999-4d36-41b7-98b1-d56115475278)
+
 ## Live Project Link
 
 https://c-lp-face-detection.onrender.com/
