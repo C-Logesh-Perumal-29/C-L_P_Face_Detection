@@ -6,8 +6,16 @@ import matplotlib.pyplot as plt
 import base64
 from io import BytesIO
 
+# Define the function to generate the download link
+def get_image_download_link(img,filename,text):
+    buffered = BytesIO()
+    img.save(buffered, format="JPEG")
+    img_str = base64.b64encode(buffered.getvalue()).decode()
+    href =  f'<a href="data:file/jpg;base64,{img_str}" download="{filename}">{text}</a>'
+    return href
+
 # Icon & title of the page :
-img = Image.open("1.jpg")
+img = Image.open("icon.png")
 st.set_page_config(page_title="Face Detection",page_icon=img,layout="wide")
 
 # Hide Menu_Bar & Footer :
@@ -20,9 +28,7 @@ hide_menu_style = """
 st.markdown(hide_menu_style , unsafe_allow_html=True)
 
 # Set the background image :
-
 Background_image = """
-
 <style>
 [data-testid="stAppViewContainer"] > .main
 {
@@ -69,26 +75,19 @@ with c1:
 with c2:
     st.markdown("<p style= 'color: black; font-family:Hobo Std;font-size:20px'> Face detection is a computer vision technology that involves identifying and locating human faces within digital images or video frames. It is an essential component of numerous applications, including facial recognition, image analysis, biometrics and more. Face detection plays a vital role in numerous fields, improving automation, security, and human-computer interaction by accurately identifying and localizing faces in images and videos.</p>", unsafe_allow_html=True)
 
-
 Pre_Trained_Dataset = cv2.CascadeClassifier("haarcascade_frontalface_default.xml")
 
 file_uploader = st.file_uploader("Choose the file",type = ['jpg','png','jpeg'])
+image = None
 
 if file_uploader is not None:
-    
     file_path = file_uploader.name 
-    
     image = Image.open(file_uploader)
-    
     image = np.array(image)
     figure = plt.figure()
-    
     plt.imshow(image)
-    
     plt.axis("off")
-    
     st.pyplot(figure)
-    
     st.markdown("<h6 style='font-family:Footlight MT Light;color:#470541;text-align:center;font-size:20px'>Image Uploaded Successfully...</h6>",unsafe_allow_html=True)
 
 st.balloons()
@@ -96,28 +95,20 @@ st.balloons()
 if file_uploader:
     st.markdown("<h6 style='color:#350227;text-align:center;font-size:25px;font-family:Footlight MT Light'>Processing..</h6>",unsafe_allow_html=True)
 
-def get_image_download_link(img,filename,text):
-    buffered = BytesIO()
-    img.save(buffered, format="JPEG")
-    img_str = base64.b64encode(buffered.getvalue()).decode()
-    href =  f'<a href="data:file/jpg;base64,{img_str}" download="{filename}">{text}</a>'
-    return href
-
-gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
-faces = Pre_Trained_Dataset.detectMultiScale(gray)
-for x,y,w,h in faces:
-    cv2.rectangle(image,(x,y),(x+w,y+h),(0,0,255),2) 
+if image is not None:
+    gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+    faces = Pre_Trained_Dataset.detectMultiScale(gray)
+    for x,y,w,h in faces:
+        cv2.rectangle(image,(x,y),(x+w,y+h),(0,0,255),2) 
+    result = Image.fromarray(image)
     
-result = Image.fromarray(image)
-
-a1,a2 = st.columns([5,5])
-
-with a1:
-    pre = st.button("Preview",key='1')
-    if pre:
-        st.image(result)
-with a2:
-    btn = st.button("Download")
-    if btn:
-        st.markdown(get_image_download_link(result,file_path,'Download Image'),unsafe_allow_html=True)
+    a1,a2 = st.columns([5,5])
     
+    with a1:
+        pre = st.button("Preview",key='1')
+        if pre:
+            st.image(result)
+    with a2:
+        btn = st.button("Download")
+        if btn:
+            st.markdown(get_image_download_link(result,file_path,'Download Image'),unsafe_allow_html=True)
